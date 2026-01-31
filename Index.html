@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Escape Room – Donna's Drawer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #111;
+      color: #f5f5f5;
+      text-align: center;
+      padding: 20px;
+    }
+
+    button, input {
+      font-size: 1.2em;
+      padding: 10px;
+      margin-top: 10px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    img {
+      max-width: 95%;
+      margin-top: 20px;
+      border-radius: 6px;
+    }
+
+    #successScreen img {
+      max-width: 80%;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+    }
+
+    #timer {
+      font-size: 1.5em;
+      margin-bottom: 15px;
+    }
+
+    #message {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- START SCREEN -->
+  <div id="startScreen">
+    <h1>Crafty Escape Room</h1>
+    <p>Are you ready to begin?</p>
+    <button onclick="startGame()">Start</button>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div id="gameScreen" class="hidden">
+    <div id="timer">Time: 00:00</div>
+
+    <!-- PUZZLE IMAGE -->
+    <img src="craft-room.jpg" alt="Donna's craft room">
+
+    <div>
+      <input type="text" id="codeInput" placeholder="Enter the code">
+      <br>
+      <button onclick="checkCode()">Submit</button>
+    </div>
+
+    <div id="message"></div>
+  </div>
+
+  <!-- SUCCESS SCREEN -->
+  <div id="successScreen" class="hidden">
+    <h1>🎉 Congratulations!</h1>
+    <p>
+      You have opened Donna’s drawer.<br>
+      Inside, you find a letter…
+    </p>
+
+    <!-- LETTER IMAGE -->
+    <img src="donna-letter.jpg" alt="Donna's letter">
+  </div>
+
+  <script>
+    const correctCode = "31279384";
+    let attemptsLeft = 3;
+    let seconds = 0;
+    let timerInterval;
+
+    function startGame() {
+      document.getElementById("startScreen").classList.add("hidden");
+      document.getElementById("gameScreen").classList.remove("hidden");
+
+      // Start timer
+      timerInterval = setInterval(() => {
+        seconds++;
+        const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
+        const secs = String(seconds % 60).padStart(2, '0');
+        document.getElementById("timer").innerText = `Time: ${mins}:${secs}`;
+      }, 1000);
+    }
+
+    function checkCode() {
+      const input = document.getElementById("codeInput").value;
+      const message = document.getElementById("message");
+
+      if (input === correctCode) {
+        clearInterval(timerInterval);
+        document.getElementById("gameScreen").classList.add("hidden");
+        document.getElementById("successScreen").classList.remove("hidden");
+      } else {
+        attemptsLeft--;
+
+        if (attemptsLeft > 0) {
+          message.innerText =
+            `That’s not correct. Keep puzzling and try again. (${attemptsLeft} attempts left)`;
+        } else {
+          message.innerText =
+            "That’s not correct. You must keep puzzling before trying again.";
+          document.getElementById("codeInput").disabled = true;
+        }
+      }
+    }
+  </script>
+
+</body>
+</html>
